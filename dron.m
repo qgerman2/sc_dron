@@ -53,5 +53,5 @@ W = [
 
 eq_d_PTP = [diff(phi); diff(theta); diff(psi)] == W*nu;
 
-%% Convertir a sistema de ecuaciones diferenciales de primer orden
+%% Ordenar las 9 ecuaciones
 eqs = [eq_dd_XYZ; eq_d_PQR; eq_d_PTP];
