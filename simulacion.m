@@ -1,6 +1,10 @@
 clc; clearvars; close all;
 dron;
 
+%Cambiar entrada respecto al tiempo a entradas tipo constantes
+syms w1c w2c w3c w4c Vxc Vyc
+eqs = subs(eqs, {w1(t), w2(t), w3(t), w4(t), Vx(t), Vy(t)}, {w1c, w2c, w3c, w4c, Vxc, Vyc});
+
 %Constantes
 h = 1/60;
 C = num2cell([
@@ -13,23 +17,27 @@ C = num2cell([
     3e-6	%k
     0.5 	%m 
 ]);
-F = matlabFunction(V, 'vars', {'Y','I_xx','I_yy','I_zz','L','d','g','k','m','w1','w2','w3','w4'});
+
+%convertir a sistema de primer orden
+[V, S] = odeToVectorField(eqs);
+F = matlabFunction(V, 'vars', {'Y','I_xx','I_yy','I_zz','L','d','g','k','m','w1c','w2c','w3c','w4c','Vxc','Vyc'});
 
 %Condición inicial
 %         y dy  x dx  z dz  p  q  r ph th ps
 Y(1,:) = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-%Pasos
-steps = 600;
-
-%Velocidad helices
+%entradas
 w1 = 650;
 w2 = 650;
 w3 = 650;
 w4 = 650;
+Vx = 0;
+Vy = 0;
 
+%metodo de euler
+steps = 600;
 for n = 2:steps
-    Y(n,:) = Y(n-1,:) + h*F(Y(n-1,:), C{:}, w1, w2, w3, w4)';
+    Y(n,:) = Y(n-1,:) + h*F(Y(n-1,:), C{:}, w1, w2, w3, w4, Vx, Vy)';
 end
 
 %Graficar

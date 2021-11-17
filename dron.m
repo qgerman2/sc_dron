@@ -2,7 +2,9 @@ clc; clearvars; close all;
 %%Constantes
 syms k d L g I_xx I_yy I_zz m
 %Control de velocidad de las helices
-syms w [1 4]
+syms w1(t) w2(t) w3(t) w4(t)
+%Viento
+syms Vx(t) Vy(t)
 %Salidas
 syms x(t) y(t) z(t)
 syms p(t) q(t) r(t)
@@ -22,8 +24,9 @@ R = [
 ];
 
 G = [0; 0; -g];
+V = [Vx(t); Vy(t); 0];
 
-eq_dd_XYZ = [diff(x, 2); diff(y, 2); diff(z, 2)] == G + R * F_B / m;
+eq_dd_XYZ = [diff(x, 2); diff(y, 2); diff(z, 2)] == G + R * F_B / m + V / m;
 
 %% Ecuaciones de velocidad angular relativa
 M_B = [
@@ -52,4 +55,3 @@ eq_d_PTP = [diff(phi); diff(theta); diff(psi)] == W*nu;
 
 %% Convertir a sistema de ecuaciones diferenciales de primer orden
 eqs = [eq_dd_XYZ; eq_d_PQR; eq_d_PTP];
-[V, S] = odeToVectorField(eqs);
