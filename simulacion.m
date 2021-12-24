@@ -29,9 +29,19 @@ d = 7.5e-7;	%d
 g = 9.81;	%g
 k = 3e-6;	%k
 m = 8.01 ;	%m 
-[V, S] = odeToVectorField(eqs);
-F = matlabFunction(V, 'vars', {'Y','I_xx','I_yy','I_zz','L','d','g','k','m','w1c','w2c','w3c','w4c','Vxc','Vyc'});
-FF=@(t,z)[z(2);Vy./m-(k.*(cos(z(12)).*sin(z(10))-cos(z(10)).*sin(z(11)).*sin(z(12))).*(w1.^2+w2.^2+w3.^2+w4.^2))./m;z(4);Vx./m+(k.*(sin(z(10)).*sin(z(12))+cos(z(10)).*cos(z(12)).*sin(z(11))).*(w1.^2+w2.^2+w3.^2+w4.^2))./m;z(6);-g+(k.*cos(z(10)).*cos(z(11)).*(w1.^2+w2.^2+w3.^2+w4.^2))./m;-(-I_yy.*z(8).*z(9)+I_zz.*z(8).*z(9)+L.*k.*(w2.^2-w4.^2))./I_xx;-(I_xx.*z(7).*z(9)-I_zz.*z(7).*z(9)+L.*k.*(w1.^2-w3.^2))./I_yy;(d.*(w1.^2-w2.^2+w3.^2-w4.^2)+I_xx.*z(7).*z(8)-I_yy.*z(7).*z(8))./I_zz;z(7)+cos(z(10)).*tan(z(11)).*z(9)+sin(z(10)).*tan(z(11)).*z(8);cos(z(10)).*z(8)-sin(z(10)).*z(9);(cos(z(10)).*z(9))./cos(z(11))+(sin(z(10)).*z(8))./cos(z(11))];
+FF=@(t,z)[
+    z(2);
+    Vy./m-(k.*(cos(z(12)).*sin(z(10))-cos(z(10)).*sin(z(11)).*sin(z(12))).*(w1.^2+w2.^2+w3.^2+w4.^2))./m;
+    z(4);
+    Vx./m+(k.*(sin(z(10)).*sin(z(12))+cos(z(10)).*cos(z(12)).*sin(z(11))).*(w1.^2+w2.^2+w3.^2+w4.^2))./m;
+    z(6);
+    -g+(k.*cos(z(10)).*cos(z(11)).*(w1.^2+w2.^2+w3.^2+w4.^2))./m;
+    -(-I_yy.*z(8).*z(9)+I_zz.*z(8).*z(9)+L.*k.*(w2.^2-w4.^2))./I_xx;
+    -(I_xx.*z(7).*z(9)-I_zz.*z(7).*z(9)+L.*k.*(w1.^2-w3.^2))./I_yy;
+    (d.*(w1.^2-w2.^2+w3.^2-w4.^2)+I_xx.*z(7).*z(8)-I_yy.*z(7).*z(8))./I_zz;
+    z(7)+cos(z(10)).*tan(z(11)).*z(9)+sin(z(10)).*tan(z(11)).*z(8);cos(z(10)).*z(8)-sin(z(10)).*z(9);
+    (cos(z(10)).*z(9))./cos(z(11))+(sin(z(10)).*z(8))./cos(z(11))
+];
 [a,b]=ode45(FF, [0 tiempo], Y(1,:));
 
 %% metodo de euler
@@ -47,6 +57,8 @@ C = num2cell([
 ]);
 h = 1/60;
 steps = 300;
+[V, S] = odeToVectorField(eqs);
+F = matlabFunction(V, 'vars', {'Y','I_xx','I_yy','I_zz','L','d','g','k','m','w1c','w2c','w3c','w4c','Vxc','Vyc'});
 for n = 2:steps
    Y(n,:) = Y(n-1,:) + h*F(Y(n-1,:), C{:}, w1, w2, w3, w4, Vx, Vy)';
 end
